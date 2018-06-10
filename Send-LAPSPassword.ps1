@@ -1,5 +1,3 @@
-# BEWARE!!! it is necessary to define email settings (from, to, smtpserver) in function Send-Email !!!
-
 function Send-LAPSPassword {
     <#
     .SYNOPSIS
@@ -17,6 +15,12 @@ function Send-LAPSPassword {
 
     .PARAMETER emailTo
     To what email address send email with LAPS password.
+
+    .PARAMETER from
+    From what address should script send email.
+    
+    .PARAMETER smtpServer
+    What smtp server should it use.
 
     .PARAMETER resetAfterMinutes
     Number of minutes to wait before reset of LAPS password occur.
@@ -46,6 +50,12 @@ function Send-LAPSPassword {
         [ValidateNotNullOrEmpty()]
         [string] $emailTo
         ,
+        [Parameter(Mandatory = $True)]        
+        [string] $from
+        ,
+        [Parameter(Mandatory = $True)]        
+        [string] $smtpServer
+        ,
         [Parameter(Position = 2)]
         [int] $resetAfterMinutes = 60
     )
@@ -74,8 +84,8 @@ function Send-LAPSPassword {
         # for security reasons send in email message just password (not computer name or that it is password)
         # optionally you can attach some 3 random chars to end of it, for case, that email message could be compromised, so you just have to ignore last 3 chars when you use it :)
         # $body = $Body + $(-join ((65..90) + (97..122) | Get-Random -Count 3 | % {[char]$_}))
-        "Password for $computerName is going to be send to $emailAddress. After $resetAfterMinutes minutes it will be automatically reset for security reasons."
-        Send-MailMessage -To $emailAddress -from "FILLIN" -Subject 'respond' -Body $password -SmtpServer "FILLIN" -UseSsl
+        "Password for $computerName is going to be send to $emailTo. After $resetAfterMinutes minutes it will be automatically reset for security reasons."
+        Send-MailMessage -To $emailTo -from $from -Subject 'response' -Body $password -SmtpServer $smtpServer -UseSsl
 
         # reset LAPS password after x minutes (for security reasons)
         $null = Start-Job -Name "resPass$($computerName.ToUpper())" {

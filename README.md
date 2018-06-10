@@ -24,8 +24,6 @@ Password will also be automatically reset after specified time.
 PS: another nice solution is to create HTTPS listener, that is used to send these password, securely
 
 How to use:
-- edit file Send-LAPSPassword.ps1
-    - set from, to, smtpserver in sub function Send-Email to meet your environment
 - open powershell console under account with right to read LAPS password from AD
 - import modules AdmPwd.PS
 - open Send-LAPSPassword.ps1 file

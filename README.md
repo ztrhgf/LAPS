@@ -5,7 +5,9 @@ powershell functions to work with LAPS
 
 Invoke-MSTS
 
-Function to simplification of using LAPS password for RDP connection. It automatically fill hostname, login and LAPS password to RDP connection (mstsc.exe). It uses great AutoItX module for this.
+Function to simplification of using LAPS password for RDP connection. 
+It automatically fill hostname, login and LAPS password to RDP connection (mstsc.exe). 
+It uses cmdkey.exe to import credentials to credential manager or if no credentials are available autofill connection details with help of great AutoItX module.
 
 How to use:
 - open powershell console under account with right to read LAPS password from AD

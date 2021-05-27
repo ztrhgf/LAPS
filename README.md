@@ -1,9 +1,9 @@
 # LAPS
-powershell functions to work with LAPS
+powershell functions to make your life with LAPS easier
 
 
 
-Invoke-MSTS
+## Invoke-MSTS
 
 Function to simplification of using LAPS password for RDP connection. 
 It automatically fill hostname, login and LAPS password to RDP connection (mstsc.exe). 
@@ -20,7 +20,7 @@ How to use:
 
 
 
-Send-LAPSPassword
+## Send-LAPSPassword
 
 Function to securely send LAPS password via email (SSL) to specified email address. 
 It is for example helpful in situations, when your colleague is solving unexpected problem and need local admin privileges. Solution is to send him LAPS password.

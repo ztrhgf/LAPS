@@ -13,7 +13,10 @@ How to use:
 - open powershell console under account with right to read LAPS password from AD
 - import modules AdmPwd.PS and AutoItX
 - dot source Invoke-MSTS.ps1 and Test-Connection2.ps1 files
-- run function Invoke-MSTS
+- run function Invoke-MSTS or its alias RDP
+
+
+![rdp](https://user-images.githubusercontent.com/2930419/119770427-7c17dd80-bebc-11eb-86b8-f82e5d6c781f.gif)
 
 
 

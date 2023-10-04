@@ -12,7 +12,7 @@ function Invoke-MSTSC {
 
     It has to be run from PowerShell console, that is running under account with permission for reading LAPS password!
 
-    It uses AdmPwd.PS for getting LAPS password and AutoItx PowerShell module for automatic filling of credentials into mstsc.exe app for RDP, in case LAPS password wasn't retrieved or domain account is used.
+    It uses LAPS official module for getting LAPS password and AutoItx PowerShell module for automatic filling of credentials into mstsc.exe app for RDP, in case LAPS password wasn't retrieved or domain account is used.
 
     It is working only on English OS.
 
@@ -87,9 +87,11 @@ function Invoke-MSTSC {
 
     .NOTES
     Automatic filling is working only on english operating systems.
+    Author: Ondřej Šebela - ztrhgf@seznam.cz
     #>
 
     [CmdletBinding()]
+    [Alias("rdp")]
     param (
         [Parameter(Position = 0, ValueFromPipeline = $true, Mandatory = $True)]
         [ValidateNotNullOrEmpty()]
@@ -131,12 +133,6 @@ function Invoke-MSTSC {
         (Get-Variable computerName).Attributes.Clear()
 
         try {
-            $null = Import-Module AdmPwd.PS -ErrorAction Stop -Verbose:$false
-        } catch {
-            throw "Module AdmPwd.PS isn't available"
-        }
-
-        try {
             Write-Verbose "Get list of domain DCs"
             $DC = [System.Directoryservices.Activedirectory.Domain]::GetCurrentDomain().DomainControllers | ForEach-Object { ($_.name -split "\.")[0] }
         } catch {
@@ -145,10 +141,16 @@ function Invoke-MSTSC {
 
         Write-Verbose "Get NETBIOS domain name"
         if (!$domainNetbiosName) {
-            $domainNetbiosName = (Get-WmiObject Win32_NTDomain).DomainName
+            $domainNetbiosName = $env:userdomain
+
+            if ($domainNetbiosName -eq $env:computername) {
+                # function is running under local account therefore $env:userdomain cannot be used
+                $domainNetbiosName = (Get-CimInstance Win32_NTDomain).DomainName # slow but gets the correct value
+            }
         }
+        Write-Verbose "Get domain name"
         if (!$domainName) {
-            $domainName = (Get-WmiObject Win32_ComputerSystem).Domain
+            $domainName = (Get-CimInstance Win32_ComputerSystem).Domain
         }
 
         if ($pickFreeComputer) {
@@ -173,7 +175,7 @@ function Invoke-MSTSC {
                     Write-Verbose "Just $online is online"
                     $name = Get-Random
                     # quser shows who is logged on
-                    $dumb = Invoke-Command -comp $online -AsJob -JobName $name -ScriptBlock {
+                    $dumb = Invoke-Command -ComputerName $online -AsJob -JobName $name -ScriptBlock {
                         $ErrorActionPreference = 'stop'
                         try {
                             # if there is active session, it means there is somebody logged on already
@@ -315,7 +317,7 @@ function Invoke-MSTSC {
 
             if ($tryLaps -and $computerHostname -notin $DC.ToLower()) {
                 Write-Verbose "Getting LAPS password for $computerHostname"
-                $password = (Get-AdmPwdPassword $computerHostname).password
+                $password = Get-LapsADPassword -Identity $computerName -AsPlainText | select -ExpandProperty Password
 
                 if (!$password) {
                     Write-Warning "Unable to get LAPS password for $computerHostname."
@@ -490,4 +492,3 @@ function Invoke-MSTSC {
         }
     }
 }
-Set-Alias rdp Invoke-MSTSC

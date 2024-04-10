@@ -6,14 +6,19 @@ powershell functions to make your life with LAPS easier
 ## Invoke-MSTS
 
 Function to simplification of using LAPS password for RDP connection. 
-It automatically fill hostname, login and LAPS password to RDP connection (mstsc.exe). 
-It uses cmdkey.exe to import credentials to credential manager or if no credentials are available autofill connection details with help of great AutoItX module.
+It automatically fills the hostname, login, and LAPS password to the RDP connection (mstsc.exe). 
+It uses cmdkey.exe to import credentials to a credential manager or if no credentials are available autofill connection details with the help of the great AutoItX module.
 
 How to use:
-- open powershell console under account with right to read LAPS password from AD
+- download the whole repository as a ZIP file and extract it to your hard drive
+- open the PowerShell console under an account with the right to read the LAPS password from AD and navigate to the extracted folder
+  - `Set-Location '<extractedFolderRoot>'`
 - import modules AdmPwd.PS and AutoItX
+  - `Import-Module AdmPwd.PS` 
 - dot source Invoke-MSTS.ps1 and Test-Connection2.ps1 files
+  - `. .\Invoke-MSTS.ps1` 
 - run function Invoke-MSTS or its alias RDP
+  - `Invoke-MSTS PC-01`
 
 
 ![rdp](https://user-images.githubusercontent.com/2930419/119770427-7c17dd80-bebc-11eb-86b8-f82e5d6c781f.gif)
@@ -29,8 +34,13 @@ Password will also be automatically reset after specified time.
 PS: another nice solution is to create HTTPS listener, that is used to send these password, securely
 
 How to use:
-- open powershell console under account with right to read LAPS password from AD
+- download the whole repository as a ZIP file and extract it to your hard drive
+- open the PowerShell console under an account with the right to read the LAPS password from AD and navigate to the extracted folder
+  - `Set-Location '<extractedFolderRoot>'`
 - import modules AdmPwd.PS
-- open Send-LAPSPassword.ps1 file
-- run function Send-LAPSPassword (Send-LAPSPassword -computerName pc1 -to admin@domain.cz)
+  - `Import-Module AdmPwd.PS` 
+- dot source Send-LAPSPassword.ps1 file
+  - `. .\Send-LAPSPassword.ps1` 
+- run function Send-LAPSPassword
+  - `Send-LAPSPassword -computerName pc1 -to admin@domain.com`
  

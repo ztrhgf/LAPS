@@ -14,9 +14,11 @@ How to use:
 - open the PowerShell console under an account with the right to read the LAPS password from AD and navigate to the extracted folder
   - `Set-Location '<extractedFolderRoot>'`
 - import modules AdmPwd.PS and AutoItX
-  - `Import-Module AdmPwd.PS` 
+  - `Import-Module AdmPwd.PS`
+  - `Import-Module AutoItX` 
 - dot source Invoke-MSTS.ps1 and Test-Connection2.ps1 files
-  - `. .\Invoke-MSTS.ps1` 
+  - `. .\Invoke-MSTS.ps1`
+  - `. .\Test-Connection2.ps1` 
 - run function Invoke-MSTS or its alias RDP
   - `Invoke-MSTS PC-01`
 

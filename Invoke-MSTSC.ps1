@@ -22,9 +22,6 @@ function Invoke-MSTSC {
     .PARAMETER pickFreeComputer
     Switch for picking one of online computers stored in computerName parameter
 
-    .PARAMETER useTierAccount
-    Instead of local admin account, your corresponding tier domain account will be used.
-
     .PARAMETER useDomainAdminAccount
     Instead of local admin account, your adm_<username> domain account will be used.
 
@@ -98,8 +95,6 @@ function Invoke-MSTSC {
         $computerName
         ,
         [switch] $pickFreeComputer
-        # ,
-        # [switch] $useTierAccount
         ,
         [switch] $useDomainAdminAccount
         ,
@@ -125,7 +120,7 @@ function Invoke-MSTSC {
         ,
         [string] $gateway
         ,
-        [string] $localAdmin = "OselUsaty"
+        [string] $localAdmin = "Administrator"
     )
 
     begin {
@@ -324,27 +319,9 @@ function Invoke-MSTSC {
                 }
             }
 
-            # explicitni vyzadani pouziti domenoveho tier uctu, odpovidajiciho tieru stroje
-            # if ($useTierAccount) {
-            #     if ($computerHostname -in $tier0.ToLower()) {
-            #         $tierAccount = "__" + ($Env:USERNAME -replace "_")
-            #         $userName = "$domainNetbiosName\$tierAccount"
-            #     } elseif ($computerHostname -in $tier1.ToLower()) {
-            #         $tierAccount = "_" + ($Env:USERNAME -replace "_")
-            #         $userName = "$domainNetbiosName\$tierAccount"
-            #     } elseif ($computerHostname -in $tier2.ToLower()) {
-            #         $tierAccount = $Env:USERNAME -replace "_"
-            #         $userName = "$domainNetbiosName\$tierAccount"
-            #     } else {
-            #         Write-Warning "Vyzadali jste pouziti tier uctu, ale $computerHostname nebyl nalezen v zadnem tieru"
-            #         $userName = "$domainNetbiosName\$Env:USERNAME"
-            #     }
-            # }
-
             if ($tryLaps) {
                 if ($computerHostname -in $DC.ToLower()) {
                     # connecting to DC (there are no local accounts
-                    # $userName = "$domainNetbiosName\$tier0Account"
                     $userName = "$domainNetbiosName\$Env:USERNAME"
                 } else {
                     # connecting to non-DC computer
@@ -381,6 +358,8 @@ function Invoke-MSTSC {
                 $Process = New-Object System.Diagnostics.Process
                 $ProcessInfo.FileName = "$($env:SystemRoot)\system32\cmdkey.exe"
                 $ProcessInfo.Arguments = "/generic:TERMSRV/$computer /user:$userName /pass:`"$password`""
+                $ProcessInfo.RedirectStandardOutput = ".\NUL"
+
                 $ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
                 $Process.StartInfo = $ProcessInfo
                 [void]$Process.Start()
@@ -425,6 +404,7 @@ function Invoke-MSTSC {
                 $Process = New-Object System.Diagnostics.Process
                 $ProcessInfo.FileName = "$($env:SystemRoot)\system32\cmdkey.exe"
                 $ProcessInfo.Arguments = "/delete:TERMSRV/$computer"
+                $ProcessInfo.RedirectStandardOutput = ".\NUL"
                 $ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
                 $Process.StartInfo = $ProcessInfo
                 [void]$Process.Start()

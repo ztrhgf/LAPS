@@ -361,6 +361,7 @@ function Invoke-MSTSC {
                 $ProcessInfo.RedirectStandardOutput = ".\NUL"
 
                 $ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+                $ProcessInfo.UseShellExecute = $false
                 $Process.StartInfo = $ProcessInfo
                 [void]$Process.Start()
                 $null = $Process.WaitForExit()
@@ -406,6 +407,7 @@ function Invoke-MSTSC {
                 $ProcessInfo.Arguments = "/delete:TERMSRV/$computer"
                 $ProcessInfo.RedirectStandardOutput = ".\NUL"
                 $ProcessInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+                $ProcessInfo.UseShellExecute = $false
                 $Process.StartInfo = $ProcessInfo
                 [void]$Process.Start()
                 $null = $Process.WaitForExit()
